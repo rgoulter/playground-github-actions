@@ -33,10 +33,12 @@ jobs:
     #        my-val: baz
     #        my-environment: environmentC
     #        my-branch: ghaC
-    environment: ${{ fromJSON(env.envPerBranch)[github.ref] }}
+    # environment: ${{ fromJSON(env.envPerBranch)[github.ref] }}
+    environment: ${{ github.ref }}
     steps:
       - name: Secret differs per branch/deployment
         run: |
+          echo "wish I were using environment: ${{ fromJSON(env.envPerBranch)[github.ref] }}"
           if [ "${{ github.ref }}" == "refs/heads/${{ secrets.SECRET_FOO }}" ]; then
             echo "matches the environment secret value"
           else
