@@ -36,9 +36,9 @@ jobs:
       - name: Secret differs per branch/deployment
         if: format('refs/heads/{0}', matrix.my-branch) == github.ref
         run: |
-          if [ "refs/heads/ghaA" == "${{ github.ref }}" ]; then
-            echo "matches; but only run on ghaA"
+          if [ "${{ matrix.expected-secret-foo-value }}" == "${{ secrets.SECRET_FOO }}" ]; then
+            echo "matches the matrix value"
           else
-            echo "not the dev access key id"
+            echo "not the expected secret value"
             exit 1
           fi
