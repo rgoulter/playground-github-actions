@@ -1,0 +1,38 @@
+name: Tinker with Branches
+
+on:
+  push:
+    branches: [ghaA, ghaB, ghaC]
+
+env:
+  node-version: 12.x
+
+jobs:
+  matrix1step1:
+    runs-on: ubuntu-latest
+    if: true
+    strategy:
+      matrix:
+        include:
+          - my-expr: true
+            my-val: foo
+            my-branch: ghaA
+          - my-expr: true
+            my-val: bar
+            my-branch: ghaB
+          - my-expr: false
+            my-val: baz
+            my-branch: ghaC
+    steps:
+      - name: First step
+        if: ${{ matrix.my-branch }} == github.ref
+        run: echo "Hello ${{ matrix.my-val }}"
+      - name: Branch A
+        if: format('refs/heads/{0}', matrix.my-branch) == github.ref
+        run: |
+          if [ "refs/heads/ghaA" == "${{ github.ref }}" ]; then
+            echo "matches; but only run on ghaA"
+          else
+            echo "not the dev access key id"
+            exit 1
+          fi
