@@ -6,6 +6,11 @@ on:
 
 env:
   node-version: 12.x
+  envPerBranch: |
+      {
+          "refs/heads/ghaA": "environmentA",
+          "refs/heads/ghaB": "environmentB"
+      }
 
 jobs:
   matrix1step1:
@@ -28,7 +33,7 @@ jobs:
     #        my-val: baz
     #        my-environment: environmentC
     #        my-branch: ghaC
-    environment: ${{ github.ref }}
+    environment: ${{ fromJSON(env.envPerBranch)[github.ref] }}
     steps:
       - name: Secret differs per branch/deployment
         run: |
