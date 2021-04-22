@@ -17,17 +17,23 @@ jobs:
           - my-expr: true
             my-val: foo
             my-branch: ghaA
+            my-environment: environmentA
+            expected-secret-foo-value: fooA
           - my-expr: true
             my-val: bar
+            my-environment: environmentB
             my-branch: ghaB
+            expected-secret-foo-value: fooB
           - my-expr: false
             my-val: baz
+            my-environment: environmentC
             my-branch: ghaC
+    environment: ${{ matrix.my-environment }}
     steps:
       - name: First step
         if: ${{ matrix.my-branch }} == github.ref
         run: echo "Hello ${{ matrix.my-val }}"
-      - name: Branch A
+      - name: Secret differs per branch/deployment
         if: format('refs/heads/{0}', matrix.my-branch) == github.ref
         run: |
           if [ "refs/heads/ghaA" == "${{ github.ref }}" ]; then
