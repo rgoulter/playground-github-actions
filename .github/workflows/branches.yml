@@ -11,33 +11,29 @@ jobs:
   matrix1step1:
     runs-on: ubuntu-latest
     if: true
-    strategy:
-      matrix:
-        include:
-          - my-expr: true
-            my-val: foo
-            my-branch: ghaA
-            my-environment: environmentA
-            expected-secret-foo-value: fooA
-          - my-expr: true
-            my-val: bar
-            my-environment: environmentB
-            my-branch: ghaB
-            expected-secret-foo-value: fooB
-          - my-expr: false
-            my-val: baz
-            my-environment: environmentC
-            my-branch: ghaC
-    environment: ${{ matrix.my-environment }}
+    #    strategy:
+    #  matrix:
+    #    include:
+    #      - my-expr: true
+    #        my-val: foo
+    #        my-branch: ghaA
+    #        my-environment: environmentA
+    #        expected-secret-foo-value: fooA
+    #      - my-expr: true
+    #        my-val: bar
+    #        my-environment: environmentB
+    #        my-branch: ghaB
+    #        expected-secret-foo-value: fooB
+    #      - my-expr: false
+    #        my-val: baz
+    #        my-environment: environmentC
+    #        my-branch: ghaC
+    environment: ${{ github.ref }}
     steps:
-      - name: First step
-        if: ${{ matrix.my-branch }} == github.ref
-        run: echo "Hello ${{ matrix.my-val }}"
       - name: Secret differs per branch/deployment
-        if: format('refs/heads/{0}', matrix.my-branch) == github.ref
         run: |
-          if [ "${{ matrix.expected-secret-foo-value }}" == "${{ secrets.SECRET_FOO }}" ]; then
-            echo "matches the matrix value"
+          if [ "${{ github.ref }}" == "refs/heads/${{ secrets.SECRET_FOO }}" ]; then
+            echo "matches the environment secret value"
           else
             echo "not the expected secret value"
             exit 1
