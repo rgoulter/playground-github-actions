@@ -34,7 +34,13 @@ jobs:
     #        my-environment: environmentC
     #        my-branch: ghaC
     # environment: ${{ fromJSON(env.envPerBranch)[github.ref] }}
-    environment: ${{ github.ref }}
+    environment: >-
+      ${{ fromJSON(
+        '{
+            "refs/heads/ghaA": "environmentA",
+            "refs/heads/ghaB": "environmentB"
+        }'
+      )[github.ref] }}
     steps:
       - name: Secret differs per branch/deployment
         run: |
